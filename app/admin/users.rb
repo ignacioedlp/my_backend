@@ -2,6 +2,8 @@ ActiveAdmin.register User do
   # Permitimos modificar el email, roles y la contraseña solo en creación
   permit_params :email, :password, :password_confirmation, role_ids: []
 
+  sidebar :audits, partial: "layouts/audits", only: :show
+
   # 🎯 Personalizamos la vista de lista
   index do
     selectable_column

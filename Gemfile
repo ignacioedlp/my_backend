@@ -19,6 +19,8 @@ gem "jbuilder"
 # Use Redis adapter to run Action Cable in production
 gem 'redis'
 
+gem 'audited'
+
 # Autenticación y API
 gem 'devise'
 gem 'devise-jwt'

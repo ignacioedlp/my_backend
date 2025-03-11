@@ -1,6 +1,8 @@
 ActiveAdmin.register AdminUser do
   permit_params :email, :password, :password_confirmation
 
+  sidebar :audits, partial: "layouts/audits", only: :show
+
   index do
     selectable_column
     id_column

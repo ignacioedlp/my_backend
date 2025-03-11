@@ -1,0 +1,6 @@
+<h3>Changes</h3>
+<ul>
+  <% resource.audits.each do |audit| %>
+    <li><%= audit.action %> - <%= audit.created_at %></li>
+  <% end %>
+</ul>
