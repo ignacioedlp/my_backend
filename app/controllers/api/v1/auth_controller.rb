@@ -1,6 +1,5 @@
 class Api::V1::AuthController < ApplicationController
     skip_before_action :verify_authenticity_token
-    before_action :authenticate_user!, only: [:logout]
   
     # POST /api/v1/register
     def register

@@ -1,14 +1,51 @@
-class ApplicationController < ActionController::API
-  include Pundit
+class ApplicationPolicy
+  attr_reader :user, :record
 
-  # Desactivar la verificación de CSRF para solicitudes JSON (como en APIs)
-  protect_from_forgery with: :null_session
+  def initialize(user, record)
+    @user = user
+    @record = record
+  end
 
-  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+  def index?
+    false
+  end
 
-  private
+  def show?
+    false
+  end
 
-  def user_not_authorized
-    render json: { error: 'You are not authorized' }, status: :forbidden
+  def create?
+    false
+  end
+
+  def new?
+    create?
+  end
+
+  def update?
+    false
+  end
+
+  def edit?
+    update?
+  end
+
+  def destroy?
+    false
+  end
+
+  class Scope
+    def initialize(user, scope)
+      @user = user
+      @scope = scope
+    end
+
+    def resolve
+      raise NotImplementedError, "You must define #resolve in #{self.class}"
+    end
+
+    private
+
+    attr_reader :user, :scope
   end
 end

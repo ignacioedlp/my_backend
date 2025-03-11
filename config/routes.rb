@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       delete 'logout', to: 'auth#logout'
       post 'password/reset', to: 'passwords#create'
     put 'password/update', to: 'passwords#update'
+      resources :users, only: [:index, :show, :update, :destroy]
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

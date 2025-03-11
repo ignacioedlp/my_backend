@@ -2,6 +2,8 @@ ActiveAdmin.register Role do
   # Permitimos parámetros necesarios para la creación y edición
   permit_params :name, user_ids: []
 
+  sidebar :audits, partial: "layouts/audits", only: :show
+
   # 🎯 Configuración de la lista de roles
   index do
     selectable_column
