@@ -6,6 +6,8 @@ Rails.application.routes.draw do
       post 'register', to: 'auth#register'
       post 'login', to: 'auth#login'
       delete 'logout', to: 'auth#logout'
+      post 'password/reset', to: 'passwords#create'
+    put 'password/update', to: 'passwords#update'
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

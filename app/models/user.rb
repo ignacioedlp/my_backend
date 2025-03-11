@@ -21,4 +21,21 @@ class User < ApplicationRecord
 
   def self.revoke_jwt(payload, user)
   end
+
+  # Generar un token de reseteo con tiempo de expiración
+  def generate_reset_password_token!
+    self.reset_password_token = SecureRandom.hex(10)
+    self.reset_password_sent_at = Time.current
+    save!
+  end
+
+  # Verificar si el token está dentro del período de validez (2 horas por defecto)
+  def reset_password_period_valid?
+    reset_password_sent_at && reset_password_sent_at >= 2.hours.ago
+  end
+
+  # Limpiar el token después de cambiar la contraseña
+  def clear_reset_password_token!
+    update(reset_password_token: nil, reset_password_sent_at: nil)
+  end
 end
