@@ -6,3 +6,15 @@ inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 # # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
 # Layout/SpaceInsideArrayLiteralBrackets:
 #   Enabled: false
+
+AllCops:
+  Exclude:
+    - 'Dockerfile'
+    - '.dockerignore'
+    - 'docker-compose.yml'
+    - 'docker-compose.prod.yml'
+    - 'docker/**/*'
+    - 'bin/entrypoint.sh'
+    - 'bin/**/*.sh'       # Ignorar cualquier otro script de shell en bin
+    - '**/*.sh'           # Ignorar cualquier archivo .sh globalmente
+    - 'config/docker/**/*' # Si tienes configuraciones específicas en esta carpeta
