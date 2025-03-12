@@ -1,6 +1,9 @@
 class Api::V1::AuthController < ApplicationController
     skip_before_action :verify_authenticity_token
   
+    MAX_LOGIN_ATTEMPTS = 5
+    BLOCK_TIME = 1.hour
+
     # POST /api/v1/register
     def register
       user = User.new(sign_up_params)
@@ -17,10 +20,16 @@ class Api::V1::AuthController < ApplicationController
   
     # POST /api/v1/login
     def login
+      ip = request.remote_ip
+      if blocked?(ip)
+        return render json: { error: "Too many failed attempts. Please try again later." }, status: :too_many_requests
+      end
+
       user = User.find_for_database_authentication(email: params[:email])
       
       # Verificar si el usuario existe y si la contraseña es válida
       if user.nil? || !user.valid_password?(params[:password])
+        increment_failed_attempts(ip)
         render json: { error: 'Email o contraseña inválidos' }, status: :unauthorized
         return
       end
@@ -86,5 +95,34 @@ class Api::V1::AuthController < ApplicationController
   
     def sign_up_params
       params.permit(:email, :password, :password_confirmation)
+    end
+
+    # 🚨 Verificar si la IP está bloqueada
+    def blocked?(ip)
+      $redis.with do |conn|
+        attempts = conn.get(failed_attempts_key(ip)).to_i
+        attempts >= MAX_LOGIN_ATTEMPTS
+      end
+    end
+
+    # 🔥 Incrementar intentos fallidos y establecer expiración
+    def increment_failed_attempts(ip)
+      $redis.with do |conn|
+        key = failed_attempts_key(ip)
+        attempts = conn.incr(key)
+        conn.expire(key, BLOCK_TIME) if attempts == 1
+      end
+    end
+
+    # ✅ Resetear intentos fallidos tras un login exitoso
+    def reset_failed_attempts(ip)
+      $redis.with do |conn|
+        conn.del(failed_attempts_key(ip))
+      end
+    end
+
+    # 🔑 Generar la clave para Redis
+    def failed_attempts_key(ip)
+      "login:failed_attempts:#{ip}"
     end
   end
