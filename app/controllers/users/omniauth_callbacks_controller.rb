@@ -12,11 +12,11 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       token = JWT.encode({ user_id: @user.id }, Rails.application.credentials.secret_key_base)
       render json: { token: token, message: "Successfully authenticated from GitHub." }
     else
-      render json: { error: 'Authentication failed' }, status: :unauthorized
+      render json: { error: "Authentication failed" }, status: :unauthorized
     end
   end
 
   def failure
-    render json: { error: 'Authentication failed' }, status: :unauthorized
+    render json: { error: "Authentication failed" }, status: :unauthorized
   end
 end

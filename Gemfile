@@ -24,8 +24,8 @@ gem "audited"
 # Autenticación y API
 gem "devise"
 gem "devise-jwt"
-gem 'omniauth'
-gem 'omniauth-github'
+gem "omniauth"
+gem "omniauth-github"
 gem "jwt"
 
 # Administración
