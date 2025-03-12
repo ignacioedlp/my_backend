@@ -43,6 +43,12 @@ gem 'responders', '~> 3.0'
 # CORS para permitir conexiones API externas
 gem 'rack-cors'
 
+# Serialización de respuestas API
+gem 'jsonapi-serializer'
+
+# Swagger
+gem 'rswag'
+
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 
@@ -67,6 +73,9 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+  
+  # RSpec for testing
+  gem 'rspec-rails'
 end
 
 group :development do

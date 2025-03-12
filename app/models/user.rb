@@ -23,6 +23,10 @@ class User < ApplicationRecord
   def self.revoke_jwt(payload, user)
   end
 
+  def generate_jwt_token
+    Warden::JWTAuth::UserEncoder.new.call(self, :user, nil).first
+  end
+
   # Generar un token de reseteo con tiempo de expiración
   def generate_reset_password_token!
     self.reset_password_token = SecureRandom.hex(10)

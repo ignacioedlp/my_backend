@@ -1,13 +1,19 @@
 Rails.application.routes.draw do
+  # Administration
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)  
+
+  # API
   namespace :api do
     namespace :v1 do
+      # Authentication
       post 'register', to: 'auth#register'
       post 'login', to: 'auth#login'
       delete 'logout', to: 'auth#logout'
       post 'password/reset', to: 'passwords#create'
     put 'password/update', to: 'passwords#update'
+
+      # Users
       resources :users, only: [:index, :show, :update, :destroy]
     end
   end
@@ -21,6 +27,7 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # Swagger
+  mount Rswag::Ui::Engine => '/api-docs'
+  mount Rswag::Api::Engine => '/api-docs'
 end

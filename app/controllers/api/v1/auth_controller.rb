@@ -7,7 +7,7 @@ class Api::V1::AuthController < ApplicationController
   
       if user.save
         user.add_role(:default)
-        token = Warden::JWTAuth::UserEncoder.new.call(user, :user, nil).first
+        token = user.generate_jwt_token
         render json: { message: 'User registered successfully', token: token }, status: :created
       else
         render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
@@ -18,17 +18,11 @@ class Api::V1::AuthController < ApplicationController
     def login
       user = User.find_for_database_authentication(email: params[:email])
       if user&.valid_password?(params[:password])
-        token = Warden::JWTAuth::UserEncoder.new.call(user, :user, nil).first
+        token = user.generate_jwt_token
         render json: { token: token }, status: :ok
       else
         render json: { error: 'Invalid Email or Password' }, status: :unauthorized
       end
-    end
-  
-    # DELETE /api/v1/logout
-    def logout
-      current_user.jwt_revocation_strategy.revoke_jwt(request.env['warden-jwt_auth.token'], current_user)
-      render json: { message: 'Logged out successfully' }, status: :ok
     end
   
     private

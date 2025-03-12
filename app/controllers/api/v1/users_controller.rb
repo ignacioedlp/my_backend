@@ -1,24 +1,23 @@
 class Api::V1::UsersController < Api::V1::ApiController
 	after_action :verify_authorized
-	# We don't need verify_policy_scoped since we're using authorize
 
 	def index
 		authorize User
 		@users = policy_scope(User)
-		render json: @users
+		render json: UserSerializer.new(@users).serializable_hash
 	end
 
 	def show
 		@user = User.find(params[:id])
 		authorize @user
-		render json: @user
+		render json: UserSerializer.new(@user).serializable_hash.to_json
 	end
 
 	def update
 		@user = User.find(params[:id])
 		authorize @user
 		if @user.update(user_params)
-			render json: @user
+			render json: UserSerializer.new(@user).serializable_hash
 		else
 			render json: { errors: @user.errors }, status: :unprocessable_entity
 		end
@@ -28,7 +27,7 @@ class Api::V1::UsersController < Api::V1::ApiController
 		@user = User.find(params[:id])
 		authorize @user
 		@user.destroy
-		head :no_content
+		render json: { message: 'Usuario eliminado correctamente.' }, status: :ok
 	end
 
 	private
