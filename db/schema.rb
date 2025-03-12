@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_03_12_151802) do
+ActiveRecord::Schema[7.2].define(version: 2025_03_12_183705) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -131,6 +131,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_12_151802) do
     t.integer "failed_attempts", default: 0, null: false
     t.string "unlock_token"
     t.datetime "locked_at"
+    t.string "provider"
+    t.string "uid"
+    t.string "name"
     t.index ["banned"], name: "index_users_on_banned"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
