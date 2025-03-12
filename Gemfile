@@ -17,37 +17,37 @@ gem "stimulus-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 # Use Redis adapter to run Action Cable in production
-gem "redis"
+gem 'redis'
 
-gem "audited"
+gem 'audited'
 
 # Autenticación y API
-gem "devise"
-gem "devise-jwt"
-gem "jwt"
+gem 'devise'
+gem 'devise-jwt'
+gem 'jwt'
 
 # Administración
-gem "activeadmin"
-gem "sassc-rails"
-gem "active_skin"
+gem 'activeadmin'
+gem 'sassc-rails'
+gem 'active_skin'
 
 # Autorización y Roles
-gem "pundit"
+gem 'pundit'
 
 # Para trabajar con roles fácilmente
-gem "rolify"
+gem 'rolify'
 
 # Mejor gestión de respuestas API
-gem "responders", "~> 3.0"
+gem 'responders', '~> 3.0'
 
 # CORS para permitir conexiones API externas
-gem "rack-cors"
+gem 'rack-cors'
 
 # Serialización de respuestas API
-gem "jsonapi-serializer"
+gem 'jsonapi-serializer'
 
 # Swagger
-gem "rswag"
+gem 'rswag'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -75,7 +75,7 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   # RSpec for testing
-  gem "rspec-rails"
+  gem 'rspec-rails'
 end
 
 group :development do
