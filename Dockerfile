@@ -1,25 +1,41 @@
+# Imagen base
 FROM ruby:3.3.0
+
+# Variables de entorno predeterminadas
+ARG RAILS_ENV=development
+ENV RAILS_ENV=${RAILS_ENV}
+ENV BUNDLE_PATH=/gems
 
 # Instalar dependencias necesarias
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs postgresql-client
 
+# Instalar Bundler
 RUN gem install bundler:2.5.3
 
-# Crear directorio de trabajo
+# Crear el directorio de trabajo
 WORKDIR /app
 
-# Copiar Gemfile y Gemfile.lock
+# Copiar Gemfile y Gemfile.lock primero para optimizar el cacheo
 COPY Gemfile Gemfile.lock ./
 
-# Instalar gemas
-RUN bundle install
+# Instalar gemas en función del entorno
+RUN if [ "$RAILS_ENV" = "production" ]; then \
+      bundle install --without development test; \
+    else \
+      bundle install; \
+    fi
 
-# Copiar el código de la aplicación
+# Copiar el resto del código de la aplicación
 COPY . .
 
-# Copiar el entrypoint y darle permisos de ejecución
+# Copiar y dar permisos al entrypoint
 COPY bin/entrypoint.sh /usr/bin/entrypoint.sh
 RUN chmod +x /usr/bin/entrypoint.sh
+
+# Precompilar assets en producción
+RUN if [ "$RAILS_ENV" = "production" ]; then \
+      bundle exec rake assets:precompile; \
+    fi
 
 # Configurar el entrypoint
 ENTRYPOINT ["/usr/bin/entrypoint.sh"]
@@ -28,4 +44,4 @@ ENTRYPOINT ["/usr/bin/entrypoint.sh"]
 EXPOSE 3000
 
 # Comando por defecto
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]

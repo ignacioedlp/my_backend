@@ -10,13 +10,13 @@ until pg_isready -h $DATABASE_HOST -p 5432 -U $DATABASE_USERNAME; do
   sleep 1
 done
 
-# Preparar la base de datos
-echo "Preparando la base de datos..."
-bundle exec rails db:prepare
+# Ejecutar migraciones en cualquier entorno
+echo "Ejecutando migraciones..."
+bundle exec rails db:migrate
 
 # Eliminar el archivo de PID si existe
 rm -f /app/tmp/pids/server.pid
 
-# Iniciar el servidor Rails
-echo "Iniciando la aplicación Rails..."
+# Iniciar la aplicación
+echo "Iniciando la aplicación Rails en $RAILS_ENV..."
 exec "$@"
