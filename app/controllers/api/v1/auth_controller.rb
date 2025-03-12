@@ -1,5 +1,6 @@
 class Api::V1::AuthController < ApplicationController
   skip_before_action :verify_authenticity_token
+  before_action :authenticate_user!, only: [:logout]
 
   MAX_LOGIN_ATTEMPTS = 5
   BLOCK_TIME = 1.hour
@@ -26,15 +27,15 @@ class Api::V1::AuthController < ApplicationController
 
     user = User.find_for_database_authentication(email: params[:email])
 
-    # 🔒 Bloqueo por usuario (Devise :lockable)
-    if user.access_locked?
-      return render json: { error: 'Tu cuenta está bloqueada por demasiados intentos fallidos.' }, status: :forbidden
-    end
-
     if user.nil? || !user.valid_password?(params[:password])
       increment_failed_attempts(ip)
       render json: { error: 'Email o contraseña inválidos' }, status: :unauthorized
       return
+    end
+
+    # 🔒 Bloqueo por usuario (Devise :lockable)
+    if user.access_locked?
+      return render json: { error: 'Tu cuenta está bloqueada por demasiados intentos fallidos.' }, status: :forbidden
     end
 
     if user.banned?
@@ -64,6 +65,11 @@ class Api::V1::AuthController < ApplicationController
       user.resend_confirmation_instructions
       render json: { message: 'Instrucciones de confirmación enviadas' }, status: :ok
     end
+  end
+
+  def logout
+    sign_out(current_user)
+    render json: { message: 'Sesión cerrada correctamente.' }, status: :ok
   end
 
   private
