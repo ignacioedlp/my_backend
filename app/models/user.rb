@@ -9,18 +9,38 @@ class User < ApplicationRecord
          :confirmable, :lockable, :trackable,
          :omniauthable, :jwt_authenticatable,
          jwt_revocation_strategy: JwtDenylist,
-         omniauth_providers: [ :github ]
+         omniauth_providers: [ :github, :google_oauth2 ]
 
   def self.ransackable_attributes(auth_object = nil)
     [ "ban_reason", "banned", "banned_at", "confirmation_sent_at", "confirmation_token", "confirmed_at", "created_at", "current_sign_in_at", "current_sign_in_ip", "email", "encrypted_password", "failed_attempts", "id", "id_value", "last_sign_in_at", "last_sign_in_ip", "locked_at", "name", "provider", "remember_created_at", "reset_password_sent_at", "reset_password_token", "sign_in_count", "uid", "unconfirmed_email", "unlock_token", "updated_at" ]
   end
 
   def self.from_omniauth(auth)
-    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
-      user.email = auth.info.email
-      user.password = Devise.friendly_token[0, 20]
-      user.confirmed_at = Time.current
-      user.name = auth.info.name
+    # Buscar si ya existe un usuario con el mismo email
+    existing_user = User.find_by(email: auth.info.email)
+
+    if existing_user
+      if existing_user.provider.nil?
+        # Si el usuario se registró con email/password, lo actualizamos con el nuevo provider
+        existing_user.update(provider: auth.provider, uid: auth.uid)
+        existing_user
+      elsif existing_user.provider == auth.provider
+        # Si el provider coincide, retornamos el usuario
+        existing_user
+      else
+        # El email ya existe con otro provider, se notifica del conflicto
+        :provider_mismatch
+      end
+    else
+      # Crear un nuevo usuario si no existe
+      User.create(
+        provider: auth.provider,
+        uid: auth.uid,
+        email: auth.info.email,
+        password: Devise.friendly_token[0, 20],
+        name: auth.info.name,
+        confirmed_at: Time.current
+      )
     end
   end
 
