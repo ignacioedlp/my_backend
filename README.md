@@ -265,3 +265,9 @@ docker volume prune -f
 📝 Licencia
 
 Este proyecto está bajo la MIT License.
+
+
+TODO:
+1. Standard code gem
+2. Commits
+3. Veremos

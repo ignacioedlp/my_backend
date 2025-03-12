@@ -2,6 +2,12 @@ Rails.application.routes.draw do
   # Administration
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)  
+  devise_for :users, controllers: {
+      registrations: 'users/registrations',
+      confirmations: 'users/confirmations',
+      passwords: 'users/passwords',
+      sessions: 'users/sessions'
+    }
 
   # API
   namespace :api do
@@ -10,11 +16,6 @@ Rails.application.routes.draw do
       post 'register', to: 'auth#register'
       post 'login', to: 'auth#login'
       delete 'logout', to: 'auth#logout'
-      post 'password/reset', to: 'passwords#create'
-      put 'password/update', to: 'passwords#update'
-      
-      # Confirmación de cuenta
-      get 'confirm_account', to: 'auth#confirm_account'
       post 'resend_confirmation', to: 'auth#resend_confirmation'
 
       # Users
