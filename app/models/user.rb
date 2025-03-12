@@ -7,7 +7,22 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :confirmable, :lockable, :trackable,
-         :jwt_authenticatable, jwt_revocation_strategy: JwtDenylist
+         :omniauthable, :jwt_authenticatable,
+         jwt_revocation_strategy: JwtDenylist,
+         omniauth_providers: [:github]
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["ban_reason", "banned", "banned_at", "confirmation_sent_at", "confirmation_token", "confirmed_at", "created_at", "current_sign_in_at", "current_sign_in_ip", "email", "encrypted_password", "failed_attempts", "id", "id_value", "last_sign_in_at", "last_sign_in_ip", "locked_at", "name", "provider", "remember_created_at", "reset_password_sent_at", "reset_password_token", "sign_in_count", "uid", "unconfirmed_email", "unlock_token", "updated_at"]
+  end
+
+  def self.from_omniauth(auth)
+    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
+      user.email = auth.info.email
+      user.password = Devise.friendly_token[0, 20]
+      user.confirmed_at = Time.current
+      user.name = auth.info.name
+    end
+  end
 
   # Scopes útiles
   scope :banned, -> { where(banned: true) }

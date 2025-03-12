@@ -15,6 +15,7 @@ ActiveAdmin.register User do
     column :current_sign_in_at
     column :last_sign_in_at
     column :created_at
+    column :provider
     actions
   end
 
@@ -22,6 +23,7 @@ ActiveAdmin.register User do
   filter :banned
   filter :confirmed
   filter :created_at
+  filter :provider
 
   form do |f|
     f.inputs do
@@ -49,6 +51,7 @@ ActiveAdmin.register User do
       row :last_sign_in_at
       row :created_at
       row :updated_at
+      row :provider
     end
   end
 

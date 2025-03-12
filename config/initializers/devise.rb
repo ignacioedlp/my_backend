@@ -19,4 +19,6 @@ Devise.setup do |config|
     jwt.revocation_requests = [ [ "DELETE", %r{^/api/v1/logout$} ] ]
     jwt.expiration_time = 30.minutes.to_i
   end
+
+  config.omniauth :github, ENV['GITHUB_CLIENT_ID'], ENV['GITHUB_CLIENT_SECRET'], scope: 'user:email', provider_ignores_state: true
 end
