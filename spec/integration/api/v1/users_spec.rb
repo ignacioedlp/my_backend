@@ -9,7 +9,7 @@ RSpec.describe 'API V1 Users', type: :request do
     get 'Lista de usuarios' do
       tags 'Users'
       produces 'application/json'
-      security [bearerAuth: []]
+      security [ bearerAuth: [] ]
 
       response '200', 'usuarios listados' do
         run_test!
@@ -27,7 +27,7 @@ RSpec.describe 'API V1 Users', type: :request do
 
     get 'Obtener detalles de un usuario' do
       tags 'Users'
-      security [bearerAuth: []]
+      security [ bearerAuth: [] ]
       produces 'application/json'
 
       response '200', 'usuario encontrado' do
@@ -43,10 +43,10 @@ RSpec.describe 'API V1 Users', type: :request do
 
     put 'Actualizar un usuario' do
       tags 'Users'
-      security [bearerAuth: []]
+      security [ bearerAuth: [] ]
       consumes 'application/json'
       produces 'application/json'
-      
+
       parameter name: :user, in: :body, schema: {
         type: :object,
         properties: {
@@ -54,7 +54,7 @@ RSpec.describe 'API V1 Users', type: :request do
           password: { type: :string },
           password_confirmation: { type: :string }
         },
-        required: ['email']
+        required: [ 'email' ]
       }
 
       response '200', 'usuario actualizado' do
@@ -72,7 +72,7 @@ RSpec.describe 'API V1 Users', type: :request do
 
     delete 'Eliminar un usuario' do
       tags 'Users'
-      security [bearerAuth: []]
+      security [ bearerAuth: [] ]
 
       response '200', 'usuario eliminado' do
         let(:id) { user.id }

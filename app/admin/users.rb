@@ -7,7 +7,7 @@ ActiveAdmin.register User do
     id_column
     column :email
     column :confirmed do |user|
-      user.confirmed? ? 'Yes' : 'No'
+      user.confirmed? ? "Yes" : "No"
     end
     column :banned
     column :banned_at
@@ -39,7 +39,7 @@ ActiveAdmin.register User do
     attributes_table do
       row :email
       row :confirmed do
-        user.confirmed? ? 'Yes' : 'No'
+        user.confirmed? ? "Yes" : "No"
       end
       row :banned
       row :ban_reason
@@ -54,21 +54,21 @@ ActiveAdmin.register User do
 
   action_item :ban, only: :show do
     if !user.banned?
-      link_to 'Ban User', ban_admin_user_path(user), method: :post
+      link_to "Ban User", ban_admin_user_path(user), method: :post
     else
-      link_to 'Unban User', unban_admin_user_path(user), method: :post
+      link_to "Unban User", unban_admin_user_path(user), method: :post
     end
   end
 
   member_action :ban, method: :post do
     user = User.find(params[:id])
-    user.ban!('Banned by admin')
-    redirect_to admin_user_path(user), notice: 'User has been banned.'
+    user.ban!("Banned by admin")
+    redirect_to admin_user_path(user), notice: "User has been banned."
   end
 
   member_action :unban, method: :post do
     user = User.find(params[:id])
     user.unban!
-    redirect_to admin_user_path(user), notice: 'User has been unbanned.'
+    redirect_to admin_user_path(user), notice: "User has been unbanned."
   end
 end

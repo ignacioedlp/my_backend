@@ -25,12 +25,12 @@ class DeviseCreateUsers < ActiveRecord::Migration[7.2]
       add_column :users, :last_sign_in_at, :datetime
       add_column :users, :current_sign_in_ip, :string
       add_column :users, :last_sign_in_ip, :string
-      
+
       # Banning
       add_column :users, :banned, :boolean, default: false
       add_column :users, :banned_at, :datetime
       add_column :users, :ban_reason, :string
-      
+
       # Confirmation
       add_column :users, :confirmation_token, :string
       add_column :users, :confirmed_at, :datetime

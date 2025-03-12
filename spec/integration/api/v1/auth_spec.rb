@@ -6,7 +6,7 @@ RSpec.describe 'API V1 Auth', type: :request do
       tags 'Auth'
       consumes 'application/json'
       produces 'application/json'
-      
+
       parameter name: :user, in: :body, schema: {
         type: :object,
         properties: {
@@ -14,7 +14,7 @@ RSpec.describe 'API V1 Auth', type: :request do
           password: { type: :string },
           password_confirmation: { type: :string }
         },
-        required: ['email', 'password', 'password_confirmation']
+        required: [ 'email', 'password', 'password_confirmation' ]
       }
 
       response '201', 'usuario registrado correctamente' do
@@ -41,7 +41,7 @@ RSpec.describe 'API V1 Auth', type: :request do
           email: { type: :string },
           password: { type: :string }
         },
-        required: ['email', 'password']
+        required: [ 'email', 'password' ]
       }
 
       response '200', 'login exitoso' do

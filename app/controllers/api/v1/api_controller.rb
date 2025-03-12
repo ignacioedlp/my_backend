@@ -21,27 +21,27 @@ module Api
 
       # ✅ Responde cuando el usuario no está autenticado
       def authenticate_user!
-        render json: { error: 'No autenticado' }, status: :unauthorized unless current_user
+        render json: { error: "No autenticado" }, status: :unauthorized unless current_user
       end
 
       # 🚫 Responde cuando el usuario no tiene permisos
       def user_not_authorized
-        render json: { error: 'No autorizado' }, status: :forbidden
+        render json: { error: "No autorizado" }, status: :forbidden
       end
 
       # 🚫 Token inválido
       def invalid_token
-        render json: { error: 'Token inválido' }, status: :unauthorized
+        render json: { error: "Token inválido" }, status: :unauthorized
       end
 
       # ⏰ Token expirado
       def expired_token
-        render json: { error: 'Token expirado' }, status: :unauthorized
+        render json: { error: "Token expirado" }, status: :unauthorized
       end
 
       # 🧑‍🚫 Usuario no encontrado con el token
       def user_not_found
-        render json: { error: 'Usuario no encontrado' }, status: :unauthorized
+        render json: { error: "Usuario no encontrado" }, status: :unauthorized
       end
     end
   end

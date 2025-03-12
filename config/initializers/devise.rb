@@ -1,6 +1,6 @@
 Devise.setup do |config|
-  config.mailer_sender = 'no-reply@example.com'
-  require 'devise/orm/active_record'
+  config.mailer_sender = "no-reply@example.com"
+  require "devise/orm/active_record"
 
   # Confirmable
   config.confirm_within = 3.days
@@ -14,9 +14,9 @@ Devise.setup do |config|
 
   # JWT Config
   config.jwt do |jwt|
-    jwt.secret = ENV['DEVISE_JWT_SECRET_KEY']
-    jwt.dispatch_requests = [['POST', %r{^/api/v1/login$}]]
-    jwt.revocation_requests = [['DELETE', %r{^/api/v1/logout$}]]
+    jwt.secret = ENV["DEVISE_JWT_SECRET_KEY"]
+    jwt.dispatch_requests = [ [ "POST", %r{^/api/v1/login$} ] ]
+    jwt.revocation_requests = [ [ "DELETE", %r{^/api/v1/logout$} ] ]
     jwt.expiration_time = 30.minutes.to_i
   end
 end

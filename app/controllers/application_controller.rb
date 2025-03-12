@@ -8,6 +8,6 @@ class ApplicationController < ActionController::Base
 
   # ✅ Responde cuando el usuario no está autenticado
   def authenticate_user!
-    render json: { error: 'No autenticado' }, status: :unauthorized unless current_user
+    render json: { error: "No autenticado" }, status: :unauthorized unless current_user
   end
 end

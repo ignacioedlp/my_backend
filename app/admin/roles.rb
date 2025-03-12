@@ -33,7 +33,7 @@ ActiveAdmin.register Role do
     f.semantic_errors
     f.inputs "Detalles del Rol" do
       f.input :name
-      f.input :users, as: :check_boxes, collection: User.all.map { |u| [u.email, u.id] }
+      f.input :users, as: :check_boxes, collection: User.all.map { |u| [ u.email, u.id ] }
     end
     f.actions
   end

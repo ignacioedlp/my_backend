@@ -1,29 +1,29 @@
 Rails.application.routes.draw do
   # Administration
   devise_for :admin_users, ActiveAdmin::Devise.config
-  ActiveAdmin.routes(self)  
+  ActiveAdmin.routes(self)
   devise_for :users, controllers: {
-      registrations: 'users/registrations',
-      confirmations: 'users/confirmations',
-      passwords: 'users/passwords',
-      sessions: 'users/sessions'
+      registrations: "users/registrations",
+      confirmations: "users/confirmations",
+      passwords: "users/passwords",
+      sessions: "users/sessions"
     }
 
   # API
   namespace :api do
     namespace :v1 do
       # Authentication
-      post 'register', to: 'auth#register'
-      post 'login', to: 'auth#login'
-      delete 'logout', to: 'auth#logout'
-      post 'resend_confirmation', to: 'auth#resend_confirmation'
+      post "register", to: "auth#register"
+      post "login", to: "auth#login"
+      delete "logout", to: "auth#logout"
+      post "resend_confirmation", to: "auth#resend_confirmation"
 
       # Users
-      resources :users, only: [:index, :show, :update, :destroy] do
+      resources :users, only: [ :index, :show, :update, :destroy ] do
         member do
           # Gestión de baneos
-          post 'ban', to: 'users#ban'
-          post 'unban', to: 'users#unban'
+          post "ban", to: "users#ban"
+          post "unban", to: "users#unban"
         end
       end
     end
@@ -39,6 +39,6 @@ Rails.application.routes.draw do
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
   # Swagger
-  mount Rswag::Ui::Engine => '/api-docs'
-  mount Rswag::Api::Engine => '/api-docs'
+  mount Rswag::Ui::Engine => "/api-docs"
+  mount Rswag::Api::Engine => "/api-docs"
 end
