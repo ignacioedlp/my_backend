@@ -12,7 +12,7 @@ done
 
 # Ejecutar migraciones en cualquier entorno
 echo "Ejecutando migraciones..."
-bundle exec rails db:migrate
+bundle exec rails db:prepare
 
 # Eliminar el archivo de PID si existe
 rm -f /app/tmp/pids/server.pid

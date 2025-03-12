@@ -7,4 +7,10 @@ class UserMailer < ApplicationMailer
       @url  = "#{ENV['FRONTEND_URL']}/reset-password?token=#{@token}"
       mail(to: @user.email, subject: 'Instrucciones para restablecer tu contraseña')
     end
+
+    def confirmation_instructions(user)
+      @user = user
+      @confirmation_url = "#{ENV['FRONTEND_URL']}/confirm_account?token=#{@user.confirmation_token}"
+      mail(to: @user.email, subject: 'Confirma tu cuenta')
+    end
   end

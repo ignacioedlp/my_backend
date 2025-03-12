@@ -11,10 +11,20 @@ Rails.application.routes.draw do
       post 'login', to: 'auth#login'
       delete 'logout', to: 'auth#logout'
       post 'password/reset', to: 'passwords#create'
-    put 'password/update', to: 'passwords#update'
+      put 'password/update', to: 'passwords#update'
+      
+      # Confirmación de cuenta
+      get 'confirm_account', to: 'auth#confirm_account'
+      post 'resend_confirmation', to: 'auth#resend_confirmation'
 
       # Users
-      resources :users, only: [:index, :show, :update, :destroy]
+      resources :users, only: [:index, :show, :update, :destroy] do
+        member do
+          # Gestión de baneos
+          post 'ban', to: 'users#ban'
+          post 'unban', to: 'users#unban'
+        end
+      end
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

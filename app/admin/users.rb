@@ -1,82 +1,74 @@
+# app/admin/users.rb
 ActiveAdmin.register User do
-  # Permitimos modificar el email, roles y la contraseña solo en creación
-  permit_params :email, :password, :password_confirmation, role_ids: []
+  permit_params :email, :password, :password_confirmation, :banned, :ban_reason
 
-  sidebar :audits, partial: "layouts/audits", only: :show
-
-  # 🎯 Personalizamos la vista de lista
   index do
     selectable_column
     id_column
     column :email
-    column :roles do |user|
-      user.roles.pluck(:name).join(", ")
+    column :confirmed do |user|
+      user.confirmed? ? 'Yes' : 'No'
     end
-    column :current_sign_in_at
+    column :banned
+    column :banned_at
     column :sign_in_count
+    column :current_sign_in_at
+    column :last_sign_in_at
     column :created_at
     actions
   end
 
-  # 🎯 Filtros de búsqueda
   filter :email
-  filter :roles, as: :select, collection: proc { Role.all.pluck(:name, :id) }
-  filter :current_sign_in_at
-  filter :sign_in_count
+  filter :banned
+  filter :confirmed
   filter :created_at
 
-  # 🎯 Formulario de edición/creación
   form do |f|
-    f.inputs "Detalles del Usuario" do
+    f.inputs do
       f.input :email
-      # Mostrar campos de contraseña solo en creación
-      if f.object.new_record?
-        f.input :password, required: true
-        f.input :password_confirmation, required: true
-      end
-      f.input :roles, as: :check_boxes, collection: Role.all
+      f.input :password
+      f.input :password_confirmation
+      f.input :banned
+      f.input :ban_reason, as: :text
+      f.input :banned_at
     end
     f.actions
   end
 
-  # 🎯 Mostrar detalles del usuario
   show do
     attributes_table do
       row :email
-      row :roles do |user|
-        user.roles.pluck(:name).join(", ")
+      row :confirmed do
+        user.confirmed? ? 'Yes' : 'No'
       end
-      row :current_sign_in_at
+      row :banned
+      row :ban_reason
+      row :banned_at
       row :sign_in_count
+      row :current_sign_in_at
+      row :last_sign_in_at
       row :created_at
       row :updated_at
     end
   end
 
-  # 🎯 Controlador personalizado para lógica adicional
-  controller do
-    def create
-      user = User.new(permitted_params[:user])
-
-      if user.save
-        redirect_to admin_user_path(user), notice: "Usuario creado correctamente."
-      else
-        render :new, alert: user.errors.full_messages.join(', ')
-      end
+  action_item :ban, only: :show do
+    if !user.banned?
+      link_to 'Ban User', ban_admin_user_path(user), method: :post
+    else
+      link_to 'Unban User', unban_admin_user_path(user), method: :post
     end
+  end
 
-    def update
-      user = User.find(params[:id])
+  member_action :ban, method: :post do
+    user = User.find(params[:id])
+    user.ban!('Banned by admin')
+    redirect_to admin_user_path(user), notice: 'User has been banned.'
+  end
 
-      # Eliminar los campos de contraseña si están vacíos para evitar actualizaciones accidentales
-      params[:user].delete(:password) if params[:user][:password].blank?
-      params[:user].delete(:password_confirmation) if params[:user][:password_confirmation].blank?
-
-      if user.update(permitted_params[:user])
-        redirect_to admin_user_path(user), notice: "Usuario actualizado correctamente."
-      else
-        render :edit, alert: user.errors.full_messages.join(', ')
-      end
-    end
+  member_action :unban, method: :post do
+    user = User.find(params[:id])
+    user.unban!
+    redirect_to admin_user_path(user), notice: 'User has been unbanned.'
   end
 end
