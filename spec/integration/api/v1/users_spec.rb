@@ -1,7 +1,8 @@
 require 'swagger_helper'
 
 RSpec.describe 'API V1 Users', type: :request do
-  let!(:user) { create(:user, email: 'user@example.com', password: 'password123') }
+  include FactoryBot::Syntax::Methods
+  let!(:user) { create(:user, email: 'user@example.com', password: 'password123', password_confirmation: 'password123') }
   let(:token) { user.generate_jwt_token }
   let(:Authorization) { "Bearer #{token}" }
 
