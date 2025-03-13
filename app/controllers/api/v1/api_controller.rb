@@ -4,44 +4,44 @@ module Api
       include Pundit::Authorization
       before_action :authenticate_user!
 
-      # 🔒 Rescatar errores de autorización de Pundit
+      # Handle Pundit exceptions
       rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
-      # ⚠️ Rescatar errores de autenticación de Devise
+      # Handle Devise and JWT exceptions
       rescue_from JWT::DecodeError, with: :invalid_token
       rescue_from JWT::ExpiredSignature, with: :expired_token
       rescue_from ActiveRecord::RecordNotFound, with: :user_not_found
 
       private
 
-      # ✅ Devuelve el usuario actual autenticado por Devise + JWT
+      # Retrieves the current authenticated user
       def current_user
         super || warden.authenticate(scope: :user)
       end
 
-      # ✅ Responde cuando el usuario no está autenticado
+      # Renders an unauthorized response if no authenticated user is found
       def authenticate_user!
-        render json: { error: "No autenticado" }, status: :unauthorized unless current_user
+        render json: { error: "User not authenticated" }, status: :unauthorized unless current_user
       end
 
-      # 🚫 Responde cuando el usuario no tiene permisos
+      # Renders a forbidden response if the user is not authorized
       def user_not_authorized
-        render json: { error: "No autorizado" }, status: :forbidden
+        render json: { error: "You do not have permission to perform this action" }, status: :forbidden
       end
 
-      # 🚫 Token inválido
+      # Renders an unauthorized response for an invalid token
       def invalid_token
-        render json: { error: "Token inválido" }, status: :unauthorized
+        render json: { error: "Invalid token" }, status: :unauthorized
       end
 
-      # ⏰ Token expirado
+      # Renders an unauthorized response for an expired token
       def expired_token
-        render json: { error: "Token expirado" }, status: :unauthorized
+        render json: { error: "Token has expired" }, status: :unauthorized
       end
 
-      # 🧑‍🚫 Usuario no encontrado con el token
+      # Renders an unauthorized response when the user is not found
       def user_not_found
-        render json: { error: "Usuario no encontrado" }, status: :unauthorized
+        render json: { error: "User not found" }, status: :unauthorized
       end
     end
   end

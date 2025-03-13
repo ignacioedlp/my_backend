@@ -15,6 +15,6 @@ AllCops:
     - 'docker-compose.prod.yml'
     - 'docker/**/*'
     - 'bin/entrypoint.sh'
-    - 'bin/**/*.sh'       # Ignorar cualquier otro script de shell en bin
-    - '**/*.sh'           # Ignorar cualquier archivo .sh globalmente
-    - 'config/docker/**/*' # Si tienes configuraciones específicas en esta carpeta
+    - 'bin/**/*.sh'
+    - '**/*.sh'
+    - 'config/docker/**/*'

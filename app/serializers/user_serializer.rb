@@ -1,31 +1,33 @@
 class UserSerializer
-    include JSONAPI::Serializer
-    attributes :id, :email, :created_at, :updated_at
+  include JSONAPI::Serializer
 
-    # Campos de seguimiento de inicios de sesión
-    attributes :sign_in_count, :current_sign_in_at, :last_sign_in_at
+  # Basic user attributes
+  attributes :id, :email, :created_at, :updated_at
 
-    # Estado de la cuenta
-    attribute :confirmed do |user|
-      user.confirmed?
-    end
+  # Login tracking fields
+  attributes :sign_in_count, :current_sign_in_at, :last_sign_in_at
 
-    attribute :confirmed_at
+  # Account confirmation status
+  attribute :confirmed do |user|
+    user.confirmed?
+  end
 
-    # Estado de baneo
-    attribute :banned do |user|
-      user.banned?
-    end
+  attribute :confirmed_at
 
-    attribute :banned_at
+  # Ban status of the user
+  attribute :banned do |user|
+    user.banned?
+  end
 
-    # Solo mostrar la razón del baneo si el usuario está baneado
-    attribute :ban_reason do |user|
-      user.banned? ? user.ban_reason : nil
-    end
+  attribute :banned_at
 
-    # Roles del usuario
-    attribute :roles do |user|
-      user.roles.map(&:name)
-    end
+  # Display ban reason only if the user is banned
+  attribute :ban_reason do |user|
+    user.banned? ? user.ban_reason : nil
+  end
+
+  # List of user roles
+  attribute :roles do |user|
+    user.roles.map(&:name)
+  end
 end

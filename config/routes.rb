@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   # Administration
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
+
+  # User authentication
   devise_for :users, controllers: {
       omniauth_callbacks: "users/omniauth_callbacks",
       registrations: "users/registrations",
@@ -13,23 +15,22 @@ Rails.application.routes.draw do
   # API
   namespace :api do
     namespace :v1 do
-      # Authentication
+      # User authentication
       post "register", to: "auth#register"
       post "login", to: "auth#login"
       delete "logout", to: "auth#logout"
       post "resend_confirmation", to: "auth#resend_confirmation"
 
-      # Users
+      # Users management
       resources :users, only: [ :index, :show, :update, :destroy ] do
         member do
-          # Gestión de baneos
+          # User management
           post "ban", to: "users#ban"
           post "unban", to: "users#unban"
         end
       end
     end
   end
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

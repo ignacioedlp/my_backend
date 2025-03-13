@@ -10,7 +10,7 @@ class Api::V1::AuthController < ApplicationController
     user = User.new(sign_up_params)
     if user.save
       user.send_confirmation_instructions
-      render json: { message: "Usuario registrado correctamente. Confirma tu cuenta a través del correo." }, status: :created
+      render json: { message: "User registered successfully. Please confirm your account via email." }, status: :created
     else
       render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
     end
@@ -20,35 +20,35 @@ class Api::V1::AuthController < ApplicationController
   def login
     ip = request.remote_ip
 
-    # 🔒 Bloqueo por IP
+    # 🔒 Block IP after multiple failed attempts
     if blocked_ip?(ip)
-      return render json: { error: "Demasiados intentos fallidos. Inténtalo nuevamente en una hora." }, status: :too_many_requests
+      return render json: { error: "Too many failed attempts. Please try again in one hour." }, status: :too_many_requests
     end
 
     user = User.find_for_database_authentication(email: params[:email])
 
     if user.nil? || !user.valid_password?(params[:password])
       increment_failed_attempts(ip)
-      render json: { error: "Email o contraseña inválidos" }, status: :unauthorized
+      render json: { error: "Invalid email or password" }, status: :unauthorized
       return
     end
 
-    # 🔒 Bloqueo por usuario (Devise :lockable)
+    # 🔒 Lock account after multiple failed attempts (Devise :lockable)
     if user.access_locked?
-      return render json: { error: "Tu cuenta está bloqueada por demasiados intentos fallidos." }, status: :forbidden
+      return render json: { error: "Your account is locked due to too many failed login attempts." }, status: :forbidden
     end
 
     if user.banned?
-      render json: { error: "Tu cuenta ha sido suspendida", reason: user.ban_reason }, status: :forbidden
+      render json: { error: "Your account has been suspended", reason: user.ban_reason }, status: :forbidden
       return
     end
 
     unless user.confirmed?
-      render json: { error: "Tu cuenta no ha sido confirmada." }, status: :forbidden
+      render json: { error: "Your account has not been confirmed." }, status: :forbidden
       return
     end
 
-    # ✅ Resetear intentos tras login exitoso
+    # ✅ Reset failed attempts after successful login
     reset_failed_attempts(ip)
     user.unlock_access! if user.access_locked?
 
@@ -60,25 +60,27 @@ class Api::V1::AuthController < ApplicationController
   def resend_confirmation
     user = User.find_by(email: params[:email])
     if user&.confirmed?
-      render json: { message: "La cuenta ya ha sido confirmada" }, status: :ok
+      render json: { message: "The account has already been confirmed." }, status: :ok
     else
       user.resend_confirmation_instructions
-      render json: { message: "Instrucciones de confirmación enviadas" }, status: :ok
+      render json: { message: "Confirmation instructions sent." }, status: :ok
     end
   end
 
+  # POST /api/v1/logout
   def logout
     sign_out(current_user)
-    render json: { message: "Sesión cerrada correctamente." }, status: :ok
+    render json: { message: "Successfully logged out." }, status: :ok
   end
 
   private
 
+  # Permit sign-up parameters
   def sign_up_params
     params.permit(:email, :password, :password_confirmation)
   end
 
-  # 🚨 Verificar si la IP está bloqueada
+  # 🚨 Check if the IP is blocked
   def blocked_ip?(ip)
     $redis.with do |conn|
       attempts = conn.get(failed_attempts_key(ip)).to_i
@@ -86,7 +88,7 @@ class Api::V1::AuthController < ApplicationController
     end
   end
 
-  # 🔥 Incrementar intentos fallidos y establecer expiración en Redis
+  # 🔥 Increment failed attempts and set expiration in Redis
   def increment_failed_attempts(ip)
     $redis.with do |conn|
       key = failed_attempts_key(ip)
@@ -95,12 +97,12 @@ class Api::V1::AuthController < ApplicationController
     end
   end
 
-  # ✅ Resetear intentos fallidos tras login exitoso
+  # ✅ Reset failed attempts after successful login
   def reset_failed_attempts(ip)
     $redis.with { |conn| conn.del(failed_attempts_key(ip)) }
   end
 
-  # 🔑 Generar la clave para Redis
+  # 🔑 Generate the Redis key for tracking failed attempts
   def failed_attempts_key(ip)
     "login:failed_attempts:#{ip}"
   end

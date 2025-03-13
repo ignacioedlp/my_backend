@@ -7,8 +7,8 @@ class ApplicationController < ActionController::Base
     super || warden.authenticate(scope: :user)
   end
 
-  # ✅ Responde cuando el usuario no está autenticado
-  def authenticate_user!
-    render json: { error: "No autenticado" }, status: :unauthorized unless current_user
-  end
+      # Renders an unauthorized response if no authenticated user is found
+      def authenticate_user!
+        render json: { error: "User not authenticated" }, status: :unauthorized unless current_user
+      end
 end
