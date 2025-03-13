@@ -91,5 +91,15 @@ GET /api/v1/users
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
+## Testing
+```bash
+docker compose exec web bundle exec rspec spec/controllers --format documentation
+```
+
+## Create swagger
+```bash
+docker compose exec web bundle exec rake rswag:specs:swaggerize
+```
+
 ## Contributing
 Pull requests are welcome. Please follow the existing code style and add tests for new features.

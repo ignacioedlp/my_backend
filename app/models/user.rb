@@ -68,4 +68,12 @@ class User < ApplicationRecord
     return nil if banned? || access_locked?
     Warden::JWTAuth::UserEncoder.new.call(self, :user, nil).first
   end
+
+  def ban!(reason)
+    update(banned: true, ban_reason: reason, banned_at: Time.current)
+  end
+
+  def unban!
+    update(banned: false, ban_reason: nil, banned_at: nil)
+  end
 end

@@ -1,5 +1,6 @@
 class Api::V1::UsersController < Api::V1::ApiController
   after_action :verify_authorized
+  before_action :set_user, only: %i[show update destroy ban unban]
 
   # GET /api/v1/users
   def index
@@ -10,14 +11,12 @@ class Api::V1::UsersController < Api::V1::ApiController
 
   # GET /api/v1/users/:id
   def show
-    @user = User.find(params[:id])
     authorize @user
     render json: UserSerializer.new(@user).serializable_hash.to_json
   end
 
   # PUT /api/v1/users/:id
   def update
-    @user = User.find(params[:id])
     authorize @user
     if @user.update(user_params)
     render json: UserSerializer.new(@user).serializable_hash
@@ -28,7 +27,6 @@ class Api::V1::UsersController < Api::V1::ApiController
 
   # DELETE /api/v1/users/:id
   def destroy
-    @user = User.find(params[:id])
     authorize @user
     @user.destroy
     render json: { message: "User successfully deleted." }, status: :ok
@@ -36,7 +34,6 @@ class Api::V1::UsersController < Api::V1::ApiController
 
   # POST /api/v1/users/:id/ban
   def ban
-    @user = User.find(params[:id])
     authorize @user, :ban?
 
     reason = params[:reason]
@@ -50,7 +47,6 @@ class Api::V1::UsersController < Api::V1::ApiController
 
   # POST /api/v1/users/:id/unban
   def unban
-    @user = User.find(params[:id])
     authorize @user, :unban?
 
     @user.unban!
@@ -66,5 +62,15 @@ class Api::V1::UsersController < Api::V1::ApiController
   # Strong parameters for user
   def user_params
     params.require(:user).permit(:email, :password, :password_confirmation)
+  end
+
+
+  # Set user
+  def set_user
+    @user = User.find_by(id: params[:id])
+
+    unless @user
+    render json: { error: "User not found." }, status: :not_found
+    end
   end
 end
