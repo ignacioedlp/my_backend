@@ -2,10 +2,10 @@ require 'rails_helper'
 
 RSpec.describe UserSerializer do
   let(:user) { User.create(
-    id: 1, 
-    name: 'Test User', 
-    email: 'test@example.com', 
-    password_digest: 'hashed_password', 
+    id: 1,
+    name: 'Test User',
+    email: 'test@example.com',
+    password_digest: 'hashed_password',
     confirmed: true,
     confirmed_at: Time.now,
     sign_in_count: 2,
@@ -25,7 +25,7 @@ RSpec.describe UserSerializer do
 
   it 'includes the expected attributes' do
     attributes = serialization['data']['attributes']
-    
+
     expect(attributes).to include(
       'id', 'email', 'created_at', 'updated_at', 'sign_in_count',
       'current_sign_in_at', 'last_sign_in_at', 'confirmed',
@@ -35,7 +35,7 @@ RSpec.describe UserSerializer do
 
   it 'does not include sensitive attributes' do
     attributes = serialization['data']['attributes']
-    
+
     expect(attributes.keys).not_to include('password', 'password_digest')
   end
 
@@ -45,7 +45,7 @@ RSpec.describe UserSerializer do
 
   it 'matches the user attributes' do
     attributes = serialization['data']['attributes']
-    
+
     expect(attributes['id']).to eq(user.id)
     expect(attributes['email']).to eq(user.email)
     expect(attributes['confirmed']).to eq(true)
